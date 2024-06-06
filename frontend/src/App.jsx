@@ -6,27 +6,28 @@ import {
   Typography,
   Image,
   message,
-  Spin,
   Card,
   Row,
   Col,
+  Select,
 } from "antd";
 import {
   UploadOutlined,
   CloudUploadOutlined,
-  LoadingOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
+const { Dragger } = Upload;
 
 const App = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processedImages, setProcessedImages] = useState([]);
   const [imageId, setImageId] = useState(null);
+  const [processingStatus, setProcessingStatus] = useState([]);
 
   const checkImageStatus = async (id) => {
     try {
@@ -39,7 +40,9 @@ const App = () => {
         setProcessedImages(images);
         setLoading(false);
         message.success("Images processed successfully!");
+        setFiles([]); // Reset the uploaded files after processing
       } else {
+        setProcessingStatus((prevStatus) => [...prevStatus, response.data.message]);
         setTimeout(() => checkImageStatus(id), 2000);
       }
     } catch (error) {
@@ -100,7 +103,7 @@ const App = () => {
         <Title
           style={{ color: "black", textAlign: "center", margin: "20px 0" }}
         >
-          Background Removal App
+          Background Removal App (Bulk)
         </Title>
       </Header>
       <Content style={{ padding: "50px 50px" }}>
@@ -115,13 +118,19 @@ const App = () => {
               }}
               bodyStyle={{ padding: "20px" }}
             >
-              <Upload
+              <Dragger
                 beforeUpload={beforeUpload}
                 multiple
                 showUploadList={false}
               >
-                <Button icon={<UploadOutlined />}>Select Images</Button>
-              </Upload>
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined />
+                </p>
+                <p className="ant-upload-text">Click or drag images to this area to upload</p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload.
+                </p>
+              </Dragger>
               <Button
                 type="primary"
                 icon={<CloudUploadOutlined />}
@@ -135,10 +144,31 @@ const App = () => {
           </Col>
         </Row>
         {loading ? (
-          <Spin
-            style={{ marginTop: 20 }}
-            indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-          />
+          <>
+            <ul>
+              {processingStatus.map((status, index) => (
+                <li key={index}>{status}</li>
+              ))}
+            </ul>
+            <Title level={3} style={{ textAlign: "center", marginTop: 20 }}>
+              Uploaded Images:
+            </Title>
+            <Row gutter={[16, 16]} justify="center">
+              {files.map((file, index) => (
+                <Col xs={24} sm={12} md={8} key={index}>
+                  <Card
+                    loading={true}
+                    style={{
+                      textAlign: "center",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      minHeight: "150px",
+                    }}
+                    bodyStyle={{ padding: "20px" }}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </>
         ) : (
           <Row gutter={[16, 16]} justify="center" style={{ marginTop: 20 }}>
             {processedImages.map((image) => (
