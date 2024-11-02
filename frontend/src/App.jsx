@@ -20,6 +20,8 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
+import HeaderComp from "./components/HeaderComp";
+import HeroSection from "./components/HeroSection";
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
@@ -147,12 +149,9 @@ const App = () => {
 
   return (
       <Layout className="layout" style={{ minHeight: "100vh" }}>
-        <Header style={{ background: "transparent", padding: "0 50px" }}>
-          <Title
-            style={{ color: "black", textAlign: "center", margin: "20px 0" }}
-          >
-            Background Removal App (Bulk)
-          </Title>
+        <Header style={{ background: "transparent", padding: "0" }}>
+          <HeaderComp />
+          <HeroSection />
         </Header>
         <Content style={{ padding: isMobileView ? "0 10px" : "50px 50px" }}>
           <Row gutter={16} justify="center">
