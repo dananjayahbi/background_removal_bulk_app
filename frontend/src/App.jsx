@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Upload,
   Button,
@@ -9,11 +9,15 @@ import {
   Card,
   Row,
   Col,
+  List,
+  Avatar,
+  Skeleton,
 } from "antd";
 import {
   UploadOutlined,
   CloudUploadOutlined,
   DownloadOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 
@@ -21,12 +25,19 @@ const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
 const { Dragger } = Upload;
 
+const LOCAL_STORAGE_KEY = "processedImages"; // Key for local storage
+
 const App = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processedImages, setProcessedImages] = useState([]);
-  const [imageId, setImageId] = useState(null);
   const [processingStatus, setProcessingStatus] = useState([]);
+
+  // Fetch processed images from local storage on component mount
+  useEffect(() => {
+    const storedImages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+    setProcessedImages(storedImages);
+  }, []);
 
   const checkImageStatus = async (id) => {
     try {
@@ -36,7 +47,12 @@ const App = () => {
           url: `http://localhost:5000/${id}/${file}`,
           name: file,
         }));
-        setProcessedImages(images);
+
+        // Save processed images to local storage
+        const updatedImages = [...processedImages, ...images];
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedImages));
+        setProcessedImages(updatedImages);
+
         setLoading(false);
         message.success("Images processed successfully!");
         setFiles([]); // Reset the uploaded files after processing
@@ -72,7 +88,6 @@ const App = () => {
         formData
       );
       const { id } = response.data;
-      setImageId(id);
       setTimeout(() => checkImageStatus(id), 2000);
     } catch (error) {
       setLoading(false);
@@ -86,6 +101,11 @@ const App = () => {
     return false; // Prevent automatic upload
   };
 
+  const handleRemove = (file) => {
+    setFiles((prevFiles) => prevFiles.filter((f) => f.uid !== file.uid));
+  };
+
+  // Handle download of processed images
   const handleDownload = (url) => {
     fetch(url)
       .then((response) => response.blob())
@@ -102,6 +122,16 @@ const App = () => {
       .catch((error) => console.error("Error downloading image:", error));
   };
 
+  // Handle deletion of a processed image from local storage
+  const handleDeleteProcessed = (imageUrl) => {
+    const updatedImages = processedImages.filter(
+      (image) => image.url !== imageUrl
+    );
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedImages));
+    setProcessedImages(updatedImages); // Update the UI without reloading
+    message.success("Image deleted successfully.");
+  };
+
   return (
     <Layout className="layout" style={{ minHeight: "100vh" }}>
       <Header style={{ background: "transparent", padding: "0 50px" }}>
@@ -115,7 +145,7 @@ const App = () => {
         <Row gutter={16} justify="center">
           <Col span={24}>
             <Card
-              title="Upload Images"
+              title={`Upload Images (${files.length} added)`}
               style={{
                 textAlign: "center",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -138,6 +168,37 @@ const App = () => {
                   Support for a single or bulk upload.
                 </p>
               </Dragger>
+
+              {/* Display thumbnails of added files */}
+              {files.length > 0 && (
+                <List
+                  itemLayout="horizontal"
+                  dataSource={files}
+                  renderItem={(file) => (
+                    <List.Item
+                      actions={[
+                        <Button
+                          type="link"
+                          icon={<DeleteOutlined />}
+                          onClick={() => handleRemove(file)}
+                        />,
+                      ]}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {/* Thumbnail */}
+                        <Avatar
+                          src={URL.createObjectURL(file)}
+                          shape="square"
+                          size={64}
+                        />
+                        {/* File name */}
+                        <span style={{ marginLeft: 10, fontWeight: 500 }}>{file.name}</span>
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              )}
+
               <Button
                 type="primary"
                 icon={<CloudUploadOutlined />}
@@ -150,18 +211,15 @@ const App = () => {
             </Card>
           </Col>
         </Row>
+
+        {/* Show skeleton placeholders while processing */}
         {loading ? (
           <>
-            <ul>
-              {processingStatus.map((status, index) => (
-                <li key={index}>{status}</li>
-              ))}
-            </ul>
             <Title level={3} style={{ textAlign: "center", marginTop: 20 }}>
-              Uploaded Images:
+              Processing Images...
             </Title>
             <Row gutter={[16, 16]} justify="center">
-              {files.map((file, index) => (
+              {files.map((_, index) => (
                 <Col xs={24} sm={12} md={8} key={index}>
                   <Card
                     loading={true}
@@ -171,7 +229,9 @@ const App = () => {
                       minHeight: "150px",
                     }}
                     bodyStyle={{ padding: "20px" }}
-                  />
+                  >
+                    <Skeleton.Image />
+                  </Card>
                 </Col>
               ))}
             </Row>
@@ -190,17 +250,22 @@ const App = () => {
                     >
                       Download
                     </Button>,
+                    <Button
+                      type="link"
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDeleteProcessed(image.url)}
+                    >
+                      Delete
+                    </Button>,
                   ]}
-                >
-                  <Card.Meta title={image.name} />
-                </Card>
+                />
               </Col>
             ))}
           </Row>
         )}
       </Content>
       <Footer style={{ textAlign: "center" }}>
-        Background Removal App ©2024 Created by You
+        Background Removal App ©2024 Created by Dananjaya
       </Footer>
     </Layout>
   );
