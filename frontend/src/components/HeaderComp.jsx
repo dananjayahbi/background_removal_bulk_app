@@ -11,13 +11,12 @@ const HeaderComp = () => {
         />
       </div>
       <nav style={styles.nav}>
-        <a href="#about" style={styles.navLink}>
+        <a href="/about" style={styles.navLink}>
           About
         </a>
         <a
-          href="https://github.com"
+          href="https://github.com/dananjayahbi"
           target="_blank"
-          rel="noopener noreferrer"
           style={styles.navLink}
         >
           GitHub

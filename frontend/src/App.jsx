@@ -150,7 +150,7 @@ const App = () => {
   return (
       <Layout className="layout" style={{ minHeight: "100vh" }}>
         <Header style={{ background: "transparent", padding: "0" }}>
-          <HeaderComp />
+          <HeaderComp /> <br />
           <HeroSection />
         </Header>
         <Content style={{ padding: isMobileView ? "50px 10px" : "50px 50px" }}>
