@@ -153,7 +153,7 @@ const App = () => {
           <HeaderComp />
           <HeroSection />
         </Header>
-        <Content style={{ padding: isMobileView ? "0 10px" : "50px 50px" }}>
+        <Content style={{ padding: isMobileView ? "50px 10px" : "50px 50px" }}>
           <Row gutter={16} justify="center">
             <Col span={24}>
               <Card
