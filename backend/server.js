@@ -17,6 +17,51 @@ const upload = multer({ dest: "Uploads/" });
 
 const pythonCommand = os.platform() === "win32" ? "python" : "python3";
 
+//..............................................................................................
+
+// Function to clear the contents of the Uploads and Outputs folders
+async function clearFolders() {
+  const uploadDir = path.join(__dirname, "Uploads");
+  const outputDir = path.join(__dirname, "Outputs");
+
+  // Clear the Uploads folder
+  try {
+    const uploadFiles = await fs.promises.readdir(uploadDir);
+    await Promise.all(
+      uploadFiles.map((file) =>
+        fs.promises.rm(path.join(uploadDir, file), {
+          recursive: true,
+          force: true,
+        })
+      )
+    );
+    console.log('"Uploads" folder cleaned.');
+  } catch (err) {
+    console.error(`Error clearing Uploads folder: ${err}`);
+  }
+
+  // Clear the Outputs folder
+  try {
+    const outputFiles = await fs.promises.readdir(outputDir);
+    await Promise.all(
+      outputFiles.map((file) =>
+        fs.promises.rm(path.join(outputDir, file), {
+          recursive: true,
+          force: true,
+        })
+      )
+    );
+    console.log('"Outputs" folder cleaned.');
+  } catch (err) {
+    console.error(`Error clearing Outputs folder: ${err}`);
+  }
+}
+
+// Set an interval to clear the folders every 5 hours
+setInterval(clearFolders, 5 * 60 * 60 * 1000);
+
+//..............................................................................................
+
 app.post("/upload", upload.array("images", 10), (req, res) => {
   const files = req.files;
   const id = uuidv4();

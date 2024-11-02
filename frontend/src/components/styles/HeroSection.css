@@ -1,0 +1,94 @@
+/* Main container */
+.hero-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    height: 80vh;
+  }
+  
+  /* Left content */
+  .left-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 2rem;
+  }
+  
+  /* Main title */
+  .main-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  /* Subtitle */
+  .sub-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #666;
+  }
+  
+  /* Call-to-action button */
+  .cta-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    width: 200px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Right content (image) */
+  .right-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Hero image */
+  .hero-image {
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    border-radius: 25px;
+  }
+  
+  /* RESPONSIVE STYLES FOR MOBILE */
+  @media (max-width: 768px) {
+    /* Stack the content vertically on mobile */
+    .hero-container {
+      flex-direction: column;
+      text-align: center;
+      height: auto; /* Adjust the height for better spacing */
+    }
+  
+    /* Adjust padding and margins for mobile */
+    .left-content {
+      padding-right: 0;
+      margin-bottom: 2rem;
+    }
+  
+    /* Adjust button width for mobile */
+    .cta-button {
+      align-self: center;
+      width: auto; /* Full-width button for mobile */
+    }
+  
+    /* Full-width image for mobile */
+    .hero-image {
+      width: 100%;
+      max-width: none; /* Remove max-width restriction */
+      height: auto;
+      border-radius: 15px;
+    }
+  }
+  
