@@ -62,6 +62,11 @@ setInterval(clearFolders, 5 * 60 * 60 * 1000);
 
 //..............................................................................................
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("Hello world!");
+});
+
 app.post("/upload", upload.array("images", 10), (req, res) => {
   const files = req.files;
   const id = uuidv4();
