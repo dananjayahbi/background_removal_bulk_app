@@ -1,25 +1,19 @@
 import React from "react";
+import { GithubOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 const HeaderComp = () => {
   return (
     <header style={styles.header}>
-      <div style={styles.logoContainer}>
-        <img
-          src="https://via.placeholder.com/40" // Replace this with your logo URL
-          alt="Logo"
-          style={styles.logo}
-        />
-      </div>
       <nav style={styles.nav}>
         <a href="/about" style={styles.navLink}>
-          About
+        <QuestionCircleOutlined /> About
         </a>
         <a
           href="https://github.com/dananjayahbi"
           target="_blank"
           style={styles.navLink}
         >
-          GitHub
+          <GithubOutlined /> GitHub
         </a>
       </nav>
     </header>

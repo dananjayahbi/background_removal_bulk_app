@@ -148,143 +148,145 @@ const App = () => {
   };
 
   return (
-      <Layout className="layout" style={{ minHeight: "100vh" }}>
-        <Header style={{ background: "transparent", padding: "0" }}>
-          <HeaderComp /> <br />
+    <Layout className="layout" style={{ minHeight: "100vh" }}>
+      <Header style={{ background: "transparent", padding: "0", zIndex: 999 }}>
+        <HeaderComp /> <br />
+      </Header>
+      <Content style={{ padding: isMobileView ? "50px 10px" : "50px 50px" }}>
+        <Row gutter={16} justify="center" style={{marginBottom: "80px"}}>
           <HeroSection />
-        </Header>
-        <Content style={{ padding: isMobileView ? "50px 10px" : "50px 50px" }}>
-          <Row gutter={16} justify="center">
-            <Col span={24}>
-              <Card
-                title={`(${files.length} Images added)`}
-                style={{
-                  textAlign: "center",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  minHeight: "150px",
-                }}
-                bodyStyle={{ padding: "20px" }}
+        </Row>
+        <Row gutter={16} justify="center">
+          <Col span={24}>
+            <Card
+              title={`(${files.length} Images added)`}
+              style={{
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                minHeight: "150px",
+              }}
+              bodyStyle={{ padding: "20px" }}
+            >
+              <Dragger
+                beforeUpload={beforeUpload}
+                multiple
+                showUploadList={false}
               >
-                <Dragger
-                  beforeUpload={beforeUpload}
-                  multiple
-                  showUploadList={false}
-                >
-                  <p className="ant-upload-drag-icon">
-                    <UploadOutlined />
-                  </p>
-                  <p className="ant-upload-text">
-                    Click or drag images to this area to upload
-                  </p>
-                  <p className="ant-upload-hint">
-                    Support for a single or bulk upload.
-                  </p>
-                </Dragger>
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag images to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload.
+                </p>
+              </Dragger>
 
-                {/* Display thumbnails of added files */}
-                {files.length > 0 && (
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={files}
-                    renderItem={(file) => (
-                      <List.Item
-                        actions={[
-                          <Button
-                            type="link"
-                            icon={<DeleteOutlined />}
-                            onClick={() => handleRemove(file)}
-                          />,
-                        ]}
-                      >
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          {/* Thumbnail */}
-                          <Avatar
-                            src={URL.createObjectURL(file)}
-                            shape="square"
-                            size={64}
-                          />
-                          {/* File name */}
-                          <span style={{ marginLeft: 10, fontWeight: 500 }}>
-                            {file.name}
-                          </span>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                )}
-
-                <Button
-                  type="primary"
-                  icon={<CloudUploadOutlined />}
-                  onClick={handleUpload}
-                  style={{
-                    width: isMobileView ? "100px" : "300px",
-                    marginTop: 20,
-                  }}
-                  disabled={files.length === 0 || loading}
-                >
-                  {isMobileView ? "Upload" : "Remove Backgrounds"}
-                </Button>
-              </Card>
-            </Col>
-          </Row>
-
-          {/* Show skeleton placeholders while processing */}
-          {loading ? (
-            <>
-              <Title level={3} style={{ textAlign: "center", marginTop: 20 }}>
-                Processing Images...
-              </Title>
-              <Row gutter={[16, 16]} justify="center">
-                {files.map((_, index) => (
-                  <Col xs={24} sm={12} md={8} key={index}>
-                    <Card
-                      loading={true}
-                      style={{
-                        textAlign: "center",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        minHeight: "150px",
-                      }}
-                      bodyStyle={{ padding: "20px" }}
+              {/* Display thumbnails of added files */}
+              {files.length > 0 && (
+                <List
+                  itemLayout="horizontal"
+                  dataSource={files}
+                  renderItem={(file) => (
+                    <List.Item
+                      actions={[
+                        <Button
+                          type="link"
+                          icon={<DeleteOutlined />}
+                          onClick={() => handleRemove(file)}
+                        />,
+                      ]}
                     >
-                      <Skeleton.Image />
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </>
-          ) : (
-            <Row gutter={[16, 16]} justify="center" style={{ marginTop: 20 }}>
-              {processedImages.map((image) => (
-                <Col xs={24} sm={12} md={8} key={image.name}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {/* Thumbnail */}
+                        <Avatar
+                          src={URL.createObjectURL(file)}
+                          shape="square"
+                          size={64}
+                        />
+                        {/* File name */}
+                        <span style={{ marginLeft: 10, fontWeight: 500 }}>
+                          {file.name}
+                        </span>
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              )}
+
+              <Button
+                type="primary"
+                icon={<CloudUploadOutlined />}
+                onClick={handleUpload}
+                style={{
+                  width: isMobileView ? "100px" : "300px",
+                  marginTop: 20,
+                }}
+                disabled={files.length === 0 || loading}
+              >
+                {isMobileView ? "Upload" : "Remove Backgrounds"}
+              </Button>
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Show skeleton placeholders while processing */}
+        {loading ? (
+          <>
+            <Title level={3} style={{ textAlign: "center", marginTop: 20 }}>
+              Processing Images...
+            </Title>
+            <Row gutter={[16, 16]} justify="center">
+              {files.map((_, index) => (
+                <Col xs={24} sm={12} md={8} key={index}>
                   <Card
-                    cover={<Image src={image.url} alt={image.name} />}
-                    actions={[
-                      <Button
-                        type="link"
-                        icon={<DownloadOutlined />}
-                        onClick={() => handleDownload(image.url)}
-                      >
-                        Download
-                      </Button>,
-                      <Button
-                        type="link"
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleDeleteProcessed(image.url)}
-                      >
-                        Delete
-                      </Button>,
-                    ]}
-                  />
+                    loading={true}
+                    style={{
+                      textAlign: "center",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      minHeight: "150px",
+                    }}
+                    bodyStyle={{ padding: "20px" }}
+                  >
+                    <Skeleton.Image />
+                  </Card>
                 </Col>
               ))}
             </Row>
-          )}
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Background Removal App ©2024 Created by Dananjaya
-        </Footer>
-      </Layout>
+          </>
+        ) : (
+          <Row gutter={[16, 16]} justify="center" style={{ marginTop: 20 }}>
+            {processedImages.map((image) => (
+              <Col xs={24} sm={12} md={8} key={image.name}>
+                <Card
+                  cover={<Image src={image.url} alt={image.name} />}
+                  actions={[
+                    <Button
+                      type="link"
+                      icon={<DownloadOutlined />}
+                      onClick={() => handleDownload(image.url)}
+                    >
+                      Download
+                    </Button>,
+                    <Button
+                      type="link"
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDeleteProcessed(image.url)}
+                    >
+                      Delete
+                    </Button>,
+                  ]}
+                />
+              </Col>
+            ))}
+          </Row>
+        )}
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        Background Removal App ©2024 Created by Dananjaya
+      </Footer>
+    </Layout>
   );
 };
 
