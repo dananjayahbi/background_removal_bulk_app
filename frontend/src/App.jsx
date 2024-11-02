@@ -9,7 +9,6 @@ import {
   Card,
   Row,
   Col,
-  Select,
 } from "antd";
 import {
   UploadOutlined,
@@ -31,10 +30,10 @@ const App = () => {
 
   const checkImageStatus = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3000/status/${id}`);
+      const response = await axios.get(`http://localhost:5000/status/${id}`);
       if (response.data.status === "completed") {
         const images = response.data.files.map((file) => ({
-          url: `http://localhost:3000/${id}/${file}`,
+          url: `http://localhost:5000/${id}/${file}`,
           name: file,
         }));
         setProcessedImages(images);
@@ -42,7 +41,10 @@ const App = () => {
         message.success("Images processed successfully!");
         setFiles([]); // Reset the uploaded files after processing
       } else {
-        setProcessingStatus((prevStatus) => [...prevStatus, response.data.message]);
+        setProcessingStatus((prevStatus) => [
+          ...prevStatus,
+          response.data.message,
+        ]);
         setTimeout(() => checkImageStatus(id), 2000);
       }
     } catch (error) {
@@ -65,7 +67,10 @@ const App = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3000/upload", formData);
+      const response = await axios.post(
+        "http://localhost:5000/upload",
+        formData
+      );
       const { id } = response.data;
       setImageId(id);
       setTimeout(() => checkImageStatus(id), 2000);
@@ -126,7 +131,9 @@ const App = () => {
                 <p className="ant-upload-drag-icon">
                   <UploadOutlined />
                 </p>
-                <p className="ant-upload-text">Click or drag images to this area to upload</p>
+                <p className="ant-upload-text">
+                  Click or drag images to this area to upload
+                </p>
                 <p className="ant-upload-hint">
                   Support for a single or bulk upload.
                 </p>
